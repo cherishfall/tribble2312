@@ -1,0 +1,78 @@
+server:
+  port: 10031
+
+spring:
+  kafka:
+    # bootstrap-servers: 101.37.119.239:9092
+    # bootstrap-servers: kafka:9092
+    bootstrap-servers: 192.168.20.107:9092
+    ###########【初始化生产者配置】###########
+    # 重试次数
+    producer:
+      # 是否开启
+      enable: true
+      # 发送的topic
+      topic-name: swallow_alarm@topic.version@
+      retries: 0
+      # 应答级别:多少个分区副本备份完成时向生产者发送ack确认(可选0、1、all/-1)
+      acks: 1
+      # 批量大小
+      batch-size: 16384
+      # 提交延时
+      properties.linger.ms: 0
+      # 当生产端积累的消息达到batch-size或接收到消息linger.ms后,生产者就会将消息提交给kafka
+      # linger.ms为0表示每接收到一条消息就提交给kafka,这时候batch-size其实就没用了
+      # 生产端缓冲区大小
+      buffer-memory: 33554432
+      # Kafka提供的序列化和反序列化类
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    ###########【初始化消费者配置】###########
+    # 默认的消费组ID
+    consumer:
+      # 是否开启
+      enable: true
+      topic-name: swallow_abnormal@topic.version@,swallow_abnormal_delete@topic.version@,swallow_inout_record@topic.version@
+      # 是否自动提交offset
+      enable-auto-commit: true
+      # 提交offset延时(接收到消息后多久提交offset)
+      auto-commit-interval: 1000
+      # 批量消费每次最多消费多少条消息
+      max-poll-records: 50
+      # 当kafka中没有初始offset或offset超出范围时将自动重置offset
+      # earliest:重置为分区中最小的offset;
+      # latest:重置为分区中最新的offset(消费分区中新产生的数据);
+      # none:只要有一个分区不存在已提交的offset,就抛出异常;
+      auto-offset-reset: latest
+      # Kafka提供的序列化和反序列化类
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        # 消费会话超时时间(超过这个时间consumer没有发送心跳,就会触发rebalance操作)
+        session.timeout.ms: 120000
+        # 消费请求超时时间
+        request.timeout.ms: 180000
+      group-id: larkConsumerGroup
+    listener:
+      # 消费端监听的topic不存在时，项目启动会报错(关掉)
+      missing-topics-fatal: false
+      # 设置批量消费
+      #type: batch
+
+com:
+  reformer:
+    lark:
+      properties:
+        KafkaTopicProperties:
+          # 对应原swallow_abnormal的新topic，可以不设置，不设置默认值为swallow_abnormal。灰度发布必须设置，如果不设置会与正式冲突
+#          swallowAbnormalTopic: swallow_abnormal${topic.version}
+          swallowAbnormalTopic: swallow_abnormal@topic.version@
+          # 对应原swallow_abnormal_delete的新topic，可以不设置，不设置默认值为swallow_abnormal_delete。灰度发布必须设置，如果不设置会与正式冲突
+#          swallowAbnormalDelete: swallow_abnormal_delete${topic.version}
+          swallowAbnormalDelete: swallow_abnormal_delete@topic.version@
+          # 对应原swallow_inout_record的新topic，可以不设置，不设置默认值为swallow_inout_record。灰度发布必须设置，如果不设置会与正式冲突
+#          swallowInoutRecord: swallow_inout_record${topic.version}
+          swallowInoutRecord: swallow_inout_record@topic.version@
+          # 对应特殊场景处理日志topic, 可以不设置，不设置默认值为business_scene。灰度发布必须设置，如果不设置会与正式冲突
+#          businessScene: business_scene${topic.version}
+          businessScene: business_scene@topic.version@

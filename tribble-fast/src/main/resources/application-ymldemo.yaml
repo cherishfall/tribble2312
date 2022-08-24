@@ -1,0 +1,2 @@
+kafka:
+  topics: swallow_abnormal, swallow_inout_record

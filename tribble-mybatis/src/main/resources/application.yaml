@@ -1,0 +1,21 @@
+
+spring:
+  # datasource 数据源配置内容
+  datasource:
+    url: jdbc:mysql://121.43.170.60:24058/rfbusiness?useUnicode=true&autoReconnect=true&characterEncoding=utf8
+#    url: jdbc:mysql://121.43.170.60:24058/rfcard?useUnicode=true&autoReconnect=true&characterEncoding=utf8
+    username: tczs_dev
+    password: tczs_dev!Q2w
+
+# mybatis 配置内容
+mybatis:
+  # 配置 MyBatis 配置文件路径
+#  config-location: classpath:mybatis-config.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # 配置 Mapper XML 地址
+  mapper-locations: classpath:mapper/*.xml
+  # 配置数据库实体包路径
+  type-aliases-package: com.tribble.tribblemybatis.entity.po
+server:
+  port: 10061

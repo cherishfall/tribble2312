@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tribble.tribblemybatis.dao.CdkeyDao">
+
+    <!-- 统计已转赠的数量 -->
+    <select id="countGiveReport" resultType="int">
+        SELECT COUNT(*) FROM rf_cdkey_relation_ship WHERE 1=1
+        AND create_user_id in
+        <foreach item="item" index="index" collection="createUserIds" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+        AND cdkey_type = '4'
+        AND `status` = '1'
+        <if test="carParkIdList != null and carParkIdList.size() > 0">
+            and card_id in (
+            select distinct card_id from card_park_rel where park_id in
+            <foreach collection="carParkIdList" index="index" item="item1" open="(" close=")" separator=",">
+                #{item1}
+            </foreach>
+            )
+        </if>
+    </select>
+
+    <!-- 查询已转赠记录 -->
+    <select id="queryGiveReport" resultType="com.tribble.tribblemybatis.entity.po.CdkeyBo">
+        SELECT card_code AS cardCode,update_time AS updateTime
+        FROM rf_cdkey_relation_ship WHERE 1=1
+        AND create_user_id in
+        <foreach item="item" index="index" collection="createUserIds" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+        AND cdkey_type = '4'
+        AND `status` = '1'
+        <if test="carParkIdList != null and carParkIdList.size() > 0">
+            and card_id in (
+            select distinct card_id from card_park_rel where park_id in
+            <foreach collection="carParkIdList" index="index" item="item1" open="(" close=")" separator=",">
+                #{item1}
+            </foreach>
+            )
+        </if>
+        ORDER BY update_time DESC
+        <if test="pageSize != null and pageSize != ''">
+            LIMIT ${startWith},${pageSize}
+        </if>
+    </select>
+
+
+
+
+</mapper>
