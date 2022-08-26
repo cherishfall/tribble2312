@@ -31,7 +31,10 @@ public class ZoneIdTest {
         ZoneId chinaZoneId1 = ZoneId.of("Asia/Shanghai");
         ZoneId chinaZoneId2 = ZoneId.of("+8");
         ZoneId chinaZoneId3 = ZoneId.of("+08:00");
-        log.info("{}, {}, {}", chinaZoneId1, chinaZoneId2, chinaZoneId3);
+        ZoneId defaultZone = ZoneId.systemDefault();
+        ZoneId utc = ZoneId.of("UTC");
+
+        log.info("{}, {}, {}, {}, {}", chinaZoneId1, chinaZoneId2, chinaZoneId3, utc, defaultZone);
     }
 
     @Test

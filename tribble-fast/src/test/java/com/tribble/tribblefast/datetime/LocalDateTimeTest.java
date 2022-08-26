@@ -25,4 +25,9 @@ public class LocalDateTimeTest {
         long diff = ChronoUnit.SECONDS.between(time1, time2);
         log.info("diff between {} and {} is {} seconds", DF.format(time1), DF.format(time2), diff);
     }
+
+    @Test
+    public void test2() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+    }
 }
